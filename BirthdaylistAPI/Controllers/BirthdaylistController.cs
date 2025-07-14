@@ -1,4 +1,5 @@
 ﻿using BirthdaylistAPI.Data;
+using BirthdaylistAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,5 +15,12 @@ namespace BirthdaylistAPI.Controllers
         {
             _context = context;
         }
+        [HttpGet]
+        [Route("getBirthdaylist")]
+        public ICollection<Birthdaylist> GetBirthdaylist()
+        {
+            return [.. _context.Birthdaylist];
+        }
     }
+
 }
