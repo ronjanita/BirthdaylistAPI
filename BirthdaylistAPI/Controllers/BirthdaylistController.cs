@@ -71,5 +71,19 @@ namespace BirthdaylistAPI.Controllers
             }
             return Ok(await _context.Birthdaylist.ToListAsync());
         }
+        public async Task<ActionResult<Birthdaylist>> UpdateCongratulation(Birthdaylist updatedCongratulation)
+        {
+            var dbBirthdaylist = await _context.Birthdaylist.FindAsync(updatedCongratulation);
+            if (dbBirthdaylist is null)
+            {
+                return NotFound("Customer not found.");
+            }
+            else
+            {
+                dbBirthdaylist.ShouldCongratulate = updatedCongratulation.ShouldCongratulate;
+                await _context.SaveChangesAsync();
+            }
+            return Ok(await _context.Birthdaylist.ToListAsync());
+        }
     }
 }
