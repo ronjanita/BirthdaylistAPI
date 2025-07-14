@@ -18,7 +18,7 @@ namespace BirthdaylistAPI.Controllers
         }
         [HttpGet]
         [Route("getBirthdaylist")]
-        public ICollection<Birthdaylist> GetBirthdaylist()
+        public ICollection<Birthdaylist> GetCustomer()
         {
             return [.. _context.Birthdaylist];
         }
@@ -28,6 +28,15 @@ namespace BirthdaylistAPI.Controllers
             _context.Birthdaylist.Add(newCustomer);
             await _context.SaveChangesAsync();
             return Ok(await _context.Birthdaylist.ToListAsync());
+        }
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<Birthdaylist>> GetCustomerById(int Id)
+        {
+            var customer = await _context.Birthdaylist.FindAsync(Id);
+            if (customer is null)
+                return NotFound("Customer not found.");
+            else
+                return Ok(customer);
         }
     }
 
