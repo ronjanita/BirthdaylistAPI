@@ -1,6 +1,5 @@
-﻿namespace BirthdaylistAPI.Models
+﻿namespace BirthdaylistAPI.Models;
+
+public class BirthdaylistAPI
 {
-    public class BirthdaylistAPI
-    {
-    }
 }
