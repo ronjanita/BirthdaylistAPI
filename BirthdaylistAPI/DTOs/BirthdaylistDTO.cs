@@ -1,11 +1,12 @@
-﻿namespace BirthdaylistAPI.DTOs
+﻿using BirthdaylistAPI;
+using AutoMapper;
+namespace BirthdaylistAPI.DTOs
 {
     public class BirthdaylistDTO
     {
-        public Guid Id { get; set; }
-        public required string Name { get; set; }
-        public required string Surname { get; set; }
-        public required DateTime Birthday { get; set; }
-        public required bool ShouldCongratulate { get; set; }   
+        public  string Name { get; set; } = string.Empty;
+        public string Surname { get; set; } = string.Empty;
+        public  DateTime Birthday { get; set; }
+        public  bool ShouldCongratulate { get; set; }   
     }
 }
