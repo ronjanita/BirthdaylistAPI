@@ -1,6 +1,7 @@
-﻿namespace BirthdaylistAPI.Models;
+﻿
+namespace BirthdaylistAPI.Models;
 
-public class BirthdaylistAPI
+public class Birthdaylist
 {
     public int Id { get; set; }
     public required string Name { get; set; }
