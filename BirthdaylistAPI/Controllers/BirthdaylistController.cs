@@ -38,6 +38,23 @@ namespace BirthdaylistAPI.Controllers
             else
                 return Ok(customer);
         }
+        [HttpPut]
+        public async Task<ActionResult<Birthdaylist>> UpdateCustomer(Birthdaylist updatedCustomer)
+        {
+            var dbBirthdaylist = await _context.Birthdaylist.FindAsync(updatedCustomer);
+            if (dbBirthdaylist is null)
+            {
+                return NotFound("Customer not found.");
+            }
+            else
+            {
+                dbBirthdaylist.Name = updatedCustomer.Name;
+                dbBirthdaylist.Surname = updatedCustomer.Surname;
+                dbBirthdaylist.Birthday = updatedCustomer.Birthday;
+                dbBirthdaylist.ShouldCongratulate = updatedCustomer.ShouldCongratulate;
+                await _context.SaveChangesAsync();
+            }
+            return Ok(await _context.Birthdaylist.ToListAsync());
+        }
     }
-
 }
