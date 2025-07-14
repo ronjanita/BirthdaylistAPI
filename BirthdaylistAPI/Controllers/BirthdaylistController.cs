@@ -56,5 +56,20 @@ namespace BirthdaylistAPI.Controllers
             }
             return Ok(await _context.Birthdaylist.ToListAsync());
         }
+        [HttpDelete]
+        public async Task<ActionResult<List<Birthdaylist>>> DeleteCustomer(int Id)
+        {
+            var customer = await _context.Birthdaylist.FindAsync(Id);
+            if (customer is null)
+            {
+                return NotFound("Customer not found");
+            }
+            else
+            {
+                _context.Birthdaylist.Remove(customer);
+                await _context.SaveChangesAsync();
+            }
+            return Ok(await _context.Birthdaylist.ToListAsync());
+        }
     }
 }
