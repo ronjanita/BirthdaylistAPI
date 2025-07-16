@@ -1,5 +1,6 @@
 using BirthdaylistAPI.Data;
 using BirthdaylistAPI.Helper;
+using BirthdaylistAPI.Interface_and_Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.AddScoped<IBirthdaylistRepository, BirthdaylistRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
