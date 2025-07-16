@@ -10,7 +10,5 @@ namespace BirthdaylistAPI.Interface_and_Repository
         Task<Birthdaylist> UpdateCustomer(Birthdaylist updatedCustomer);
         Task<bool>DeleteCustomer(Guid Id);
         Task<Birthdaylist> UpdateCongratulation(Birthdaylist updatedCongratulation);
-
-
     }
 }

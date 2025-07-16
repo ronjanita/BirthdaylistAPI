@@ -1,6 +1,6 @@
 ﻿namespace BirthdaylistAPI.DTOs
 {
-    public class CreateCustomer : BirthdaylistDTO
+    public class CreateCustomerDTO : BirthdaylistDTO
     {
         new public required string Name { get; set; }
         new public required string Surname { get; set; }
