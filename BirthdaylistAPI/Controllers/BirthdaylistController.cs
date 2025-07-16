@@ -1,75 +1,71 @@
-﻿using BirthdaylistAPI.Data;
+﻿using AutoMapper;
+using BirthdaylistAPI.Data;
+using BirthdaylistAPI.Interface_and_Repository;
 using BirthdaylistAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using BirthdaylistAPI.DTOs;
 
 namespace BirthdaylistAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BirthdaylistController : ControllerBase
+    public class BirthdaylistController(IBirthdaylistRepository birthdaylistRepository, IMapper mapper): ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper = mapper;
+        private readonly IBirthdaylistRepository _birthdaylistRepository = birthdaylistRepository;
 
-        public BirthdaylistController(DataContext context)
-        {
-            _context = context;
-        }
         [HttpGet]
         [Route("getBirthdaylist")]
-        public ICollection<Birthdaylist> GetCustomer()
+        public async Task<ActionResult<List<BirthdaylistDTO>>> GetCustomer()
         {
-            return [.. _context.Birthdaylist];
+            ICollection<Birthdaylist> customer = await _birthdaylistRepository.GetCustomer();
+            List<BirthdaylistDTO> customerDTO = _mapper.Map<List<BirthdaylistDTO>>(customer);
+            return Ok(customerDTO);
         }
         [HttpPost]
         public async Task<ActionResult<List<Birthdaylist>>> AddCustomer(Birthdaylist newCustomer)
         {
+            Birthdaylist mappedCustomer = _mapper.Map<Birthdaylist>(newCustomer);
             _context.Birthdaylist.Add(newCustomer);
             await _context.SaveChangesAsync();
             return Ok(await _context.Birthdaylist.ToListAsync());
         }
         [HttpGet("{Id}")]
-        public async Task<ActionResult<Birthdaylist>> GetCustomerById(int Id)
+        public async Task<ActionResult<Birthdaylist>> GetCustomerById(Guid Id)
         {
-            var customer = await _context.Birthdaylist.FindAsync(Id);
+            var customer = await _birthdaylistRepository.GetCustomerById(Id);
             if (customer is null)
                 return NotFound("Customer not found.");
-            else
-                return Ok(customer);
+            var customerDTO = _mapper.Map<BirthdaylistDTO>(customer);
+            return Ok(customerDTO);
         }
         [HttpPut]
-        public async Task<ActionResult<Birthdaylist>> UpdateCustomer(Birthdaylist updatedCustomer)
+        public async Task<ActionResult<Birthdaylist>> UpdateCustomer(Guid Id, [FromBody] Birthdaylist updatedCustomer)
         {
-            var dbBirthdaylist = await _context.Birthdaylist.FindAsync(updatedCustomer);
+            var dbBirthdaylist = await _birthdaylistRepository.GetCustomerById(Id);
             if (dbBirthdaylist is null)
             {
                 return NotFound("Customer not found.");
             }
-            else
-            {
-                dbBirthdaylist.Name = updatedCustomer.Name;
-                dbBirthdaylist.Surname = updatedCustomer.Surname;
-                dbBirthdaylist.Birthday = updatedCustomer.Birthday;
-                dbBirthdaylist.ShouldCongratulate = updatedCustomer.ShouldCongratulate;
-                await _context.SaveChangesAsync();
-            }
-            return Ok(await _context.Birthdaylist.ToListAsync());
+            _mapper.Map(updatedCustomer, dbBirthdaylist);
+            await _birthdaylistRepository.UpdateCustomer(dbBirthdaylist);
+            var updatedCustomerDTO = _mapper.Map<BirthdaylistDTO>(dbBirthdaylist);
+            return Ok(updatedCustomerDTO);
         }
         [HttpDelete]
-        public async Task<ActionResult<List<Birthdaylist>>> DeleteCustomer(int Id)
+        public async Task<ActionResult> DeleteCustomer(Guid Id)
         {
             var customer = await _context.Birthdaylist.FindAsync(Id);
             if (customer is null)
             {
                 return NotFound("Customer not found");
             }
-            else
-            {
-                _context.Birthdaylist.Remove(customer);
-                await _context.SaveChangesAsync();
-            }
-            return Ok(await _context.Birthdaylist.ToListAsync());
+            await _birthdaylistRepository.DeleteCustomer(Id);
+            return NoContent();
         }
         public async Task<ActionResult<Birthdaylist>> UpdateCongratulation(Birthdaylist updatedCongratulation)
         {
@@ -78,12 +74,10 @@ namespace BirthdaylistAPI.Controllers
             {
                 return NotFound("Customer not found.");
             }
-            else
-            {
-                dbBirthdaylist.ShouldCongratulate = updatedCongratulation.ShouldCongratulate;
-                await _context.SaveChangesAsync();
-            }
-            return Ok(await _context.Birthdaylist.ToListAsync());
+            _mapper.Map(updatedCongratulation, dbBirthdaylist);
+            await _birthdaylistRepository.UpdateCongratulation(dbBirthdaylist);
+            var updatedCongratulationDTO = _mapper.Map<BirthdaylistDTO>(dbBirthdaylist);
+            return Ok(updatedCongratulationDTO);
         }
     }
 }
